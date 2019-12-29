@@ -45,6 +45,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  int index = 0;
 
   void _incrementCounter() {
     setState(() {
@@ -59,36 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
+
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: _getTitle(),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
+
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
@@ -101,11 +81,109 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      drawer: new Drawer(
+        elevation: 8.0,
+        semanticLabel: '滑动抽屉',
+        child: new DrawerLayout(),
+      ),
+
+        bottomNavigationBar: new BottomNavigationBar (
+        onTap: _selectPosition,
+        currentIndex: index,
+        type: BottomNavigationBarType.fixed,
+        iconSize: 24.0,
+        items: new List<BottomNavigationBarItem>.generate(3, (index) {
+          switch (index) {
+            case 0:
+              return new BottomNavigationBarItem(
+                  icon: new Icon(Icons.movie), title: new Text('电影'));
+            case 1:
+              return new BottomNavigationBarItem(
+                  icon: new Icon(Icons.book), title: new Text('图书'));
+            case 2:
+              return new BottomNavigationBarItem(
+                  icon: new Icon(Icons.music_note), title: new Text('音乐'));
+          }
+        })),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  // 方法
+  _getTitle() {
+    switch (index) {
+      case 0:
+        return _forMatchTitle('电影');
+      case 1:
+        return _forMatchTitle('图书');
+      case 2:
+        return _forMatchTitle('音乐');
+    }
+  }
+
+  //获取标题的样式
+  _forMatchTitle(String data) {
+    return new Text(data);
+  }
+
+  //获取选中的tab 索引
+  _selectPosition(int index) {
+    if (this.index == index) return;
+    setState(() {
+      this.index = index;
+    });
+  }
+
+
+
+}
+
+
+
+// 抽屉
+class DrawerLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new ListView(
+      children: <Widget>[
+        new DrawerHeader(
+          decoration: new BoxDecoration(
+            color: Colors.grey[400],
+          ),
+          child: new Column(
+            children: <Widget>[
+              new Expanded(
+                child: new Align(
+                  alignment: Alignment.bottomCenter,
+                  child: new Column(
+                    children: <Widget>[
+                      new CircleAvatar(
+                        child: new Text('X'),
+                      ),
+                      new Text('Yixian', style: Theme
+                          .of(context)
+                          .textTheme
+                          .title),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        new AboutListTile(
+          icon: new Icon(Icons.person),
+          child: new Text('关于项目'),
+          applicationLegalese: '',
+          applicationName: 'Flutter Demo',
+          applicationVersion: 'version:0.1',
+        ),
+      ],
     );
   }
 }
